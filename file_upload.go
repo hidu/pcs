@@ -6,7 +6,25 @@ import (
 	"net/url"
 	//	"fmt"
 	"mime/multipart"
+	"encoding/json"
 )
+
+/**
+*单个文件上传的
+ */
+type ResponseFileUploadSingle struct {
+	Path  string `json:"path"`
+	Size  uint64 `json:"size"`
+	Ctime uint64 `json:"ctime"`
+	Mtime uint64 `json:"mtime"`
+	Md5   string `json:"md5"`
+	Fs_id string `json:"fs_id "`
+}
+
+func (rt *ResponseFileUploadSingle) String() string {
+	bf, _ := json.Marshal(rt)
+	return string(bf)
+}
 
 func (pcs *Pcs) FileUploadSingle(local_path string, file_data []byte, server_path string, ondup_overwrite bool) (resSingle *ResponseFileUploadSingle, err error) {
 	if local_path != "" {
@@ -37,5 +55,4 @@ func (pcs *Pcs) FileUploadSingle(local_path string, file_data []byte, server_pat
    resSingle=new(ResponseFileUploadSingle)
 	_, _, err = pcs.QuickRequest(req, resSingle)
 	return resSingle, err
-
 }

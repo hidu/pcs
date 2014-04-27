@@ -2,11 +2,11 @@ package pcs
 
 import (
 	"bytes"
-	"io/ioutil"
 	"net/url"
 	//	"fmt"
 	"mime/multipart"
 	"encoding/json"
+	"io"
 )
 
 /**
@@ -15,8 +15,8 @@ import (
 type ResponseFileUploadSingle struct {
 	Path  string `json:"path"`
 	Size  uint64 `json:"size"`
-	Ctime uint64 `json:"ctime"`
-	Mtime uint64 `json:"mtime"`
+	Ctime int64 `json:"ctime"`
+	Mtime int64 `json:"mtime"`
 	Md5   string `json:"md5"`
 	Fs_id string `json:"fs_id "`
 }
@@ -26,13 +26,7 @@ func (rt *ResponseFileUploadSingle) String() string {
 	return string(bf)
 }
 
-func (pcs *Pcs) FileUploadSingle(local_path string, file_data []byte, server_path string, ondup_overwrite bool) (resSingle *ResponseFileUploadSingle, err error) {
-	if local_path != "" {
-		file_data, err = ioutil.ReadFile(local_path)
-		if err != nil {
-			return
-		}
-	}
+func (pcs *Pcs) FileUploadSingle(data io.Reader, server_path string, ondup_overwrite bool) (resSingle *ResponseFileUploadSingle, err error) {
 	ondup := "overwrite"
 	if !ondup_overwrite {
 		ondup = "newcopy"
@@ -45,10 +39,10 @@ func (pcs *Pcs) FileUploadSingle(local_path string, file_data []byte, server_pat
 	buf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(buf)
 	fileWriter, err := bodyWriter.CreateFormFile("file", "hidu")
-	fileWriter.Write(file_data)
-
+	io.Copy(fileWriter,data)
 	contentType := bodyWriter.FormDataContentType()
 	bodyWriter.Close()
+	
 	req := pcs.BuildRequest(POST, "file?"+values.Encode(), buf)
 	req.Header.Add("Content-Type", contentType)
 	

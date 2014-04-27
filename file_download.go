@@ -1,22 +1,21 @@
 package pcs
 
 import (
-  "bytes"
    "net/url"
-   "fmt"
-    "time"
-    "net/http"
+	"io"
+	"time"
+//	"fmt"
+	"net/http"
 )
 
 type FileDownloadInfo struct{
-    Buffer bytes.Buffer
     ContentLength int64
     Content_MD5 string
     Content_Type string
-    Mtime uint64
+    Mtime int64
 }
-
-func (pcs *Pcs)FileDownload(path string)(*FileDownloadInfo,error){
+//文件下载
+func (pcs *Pcs)FileDownload(path string,writer io.Writer)(*FileDownloadInfo,error){
   url_values:=url.Values{}
   url_values.Add("path",path)
   req:=pcs.BuildRequest(GET, "file?method=download&"+url_values.Encode(), nil)
@@ -25,15 +24,15 @@ func (pcs *Pcs)FileDownload(path string)(*FileDownloadInfo,error){
    return nil,err
   }
   info:=new(FileDownloadInfo)
-  info.Buffer=bytes.Buffer{}
-  info.Buffer.ReadFrom(res.Body)
 
   info.ContentLength=res.ContentLength
   info.Content_Type=res.Header.Get("Content-Type")
   info.Content_MD5=res.Header.Get("Content-MD5")
-  //@todo
-//  Last_Modified:=res.Header.Get("Last-Modified")
-//  t,_:=time.Parse(http.TimeFormat,Last_Modified)
-//  fmt.Print(t)
+  io.Copy(writer,res.Body)
+  
+  Last_Modified:=res.Header.Get("Last-Modified")
+  t,_:=time.Parse(http.TimeFormat,Last_Modified)
+  info.Mtime=t.Local().Unix()
+//  fmt.Println(t.Local().Format("2006-01-02 15:04:05"))
   return info,err
 }

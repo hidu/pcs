@@ -14,13 +14,13 @@ type ResponseFileMeta struct{
 type ResponseFileMeta_SubInfo struct{
 	Fs_id   uint64 `json:"fs_id"`   //文件或目录在PCS的临时唯一标识ID。 
 	Path   string `json:"path"`
-   Ctime uint64 `json:"ctime"`
-	Mtime uint64 `json:"mtime"`
+   Ctime int64 `json:"ctime"`
+	Mtime int64 `json:"mtime"`
 	Block_list    string `json:"block_list"`  //文件所有分片的md5数组JSON字符串。 
 	Size  uint64 `json:"size"`
-	Isdir  uint64 `json:"isdir"`  //“0”为文件 “1”为目录 
-	Filenum  uint64 `json:"filenum"` 
-	Ifhassubdir  uint64 `json:"ifhassubdir"` //是否含有子目录的标识符 “0”表示没有子目录  “1”表示有子目录 
+	Isdir  int `json:"isdir"`  //“0”为文件 “1”为目录 
+	Filenum  int `json:"filenum"` 
+	Ifhassubdir  int `json:"ifhassubdir"` //是否含有子目录的标识符 “0”表示没有子目录  “1”表示有子目录 
 }
 
 func (rt *ResponseFileMeta) String() string {

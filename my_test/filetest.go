@@ -34,6 +34,7 @@ func main(){
    funcs["meta_batch"]=run_metabatch
    funcs["makedir"]=run_makedir
    funcs["download"]=run_download
+   funcs["filelist"]=run_filelist
    if fun,has:=funcs[func_name];has{
      fun()
    }else if(func_name=="all"){
@@ -79,4 +80,10 @@ func run_download(){
 	w:=bufio.NewWriter(os.Stdout)
 	obj,err := pcs.FileDownload(base_dir+"pcs.go",w)
 	fmt.Println(obj.ContentLength, err)
+}
+
+func run_filelist(){
+	pcs := GetPcs()
+	info,err:=pcs.FileListEasy(base_dir)
+	fmt.Println(info, err)
 }

@@ -10,8 +10,8 @@ import (
 
 type ResponseQuote struct {
 	QuotaSize int64 `json:"quota"`
-	UsedSize  int64 `json:"used"`
-	RequestId int64 `json:"request_id"`
+	UsedSize  uint64 `json:"used"`
+	RequestId uint64 `json:"request_id"`
 }
 func (rt *ResponseQuote) String() string {
 	bf, _ := json.Marshal(rt)
@@ -61,4 +61,12 @@ func (pcs *Pcs) QuickRequest(req *http.Request, v interface{}) (resp *http.Respo
 	return
 }
 
+
+type ResponseOk struct {
+	RequestId uint64 `json:"request_id"`
+}
+func (rt *ResponseOk) String() string {
+	bf, _ := json.Marshal(rt)
+	return string(bf)
+}
 

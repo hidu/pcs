@@ -35,6 +35,10 @@ func main(){
    funcs["makedir"]=run_makedir
    funcs["download"]=run_download
    funcs["filelist"]=run_filelist
+   funcs["filecopy"]=run_filecopy
+   funcs["filemove"]=run_filemv
+   funcs["filedelete"]=run_filedelete
+   funcs["filesearch"]=run_filesearch
    if fun,has:=funcs[func_name];has{
      fun()
    }else if(func_name=="all"){
@@ -85,5 +89,25 @@ func run_download(){
 func run_filelist(){
 	pcs := GetPcs()
 	info,err:=pcs.FileListEasy(base_dir)
+	fmt.Println(info, err)
+}
+func run_filecopy(){
+	pcs := GetPcs()
+	info,err:=pcs.FileCopy(base_dir+"pcs.go",base_dir+"pcs.go.copy1")
+	fmt.Println(info, err)
+}
+func run_filemv(){
+	pcs := GetPcs()
+	info,err:=pcs.FileMove(base_dir+"pcs.go.copy1",base_dir+"pcs.go.copy2")
+	fmt.Println(info, err)
+}
+func run_filedelete(){
+	pcs := GetPcs()
+	info,err:=pcs.FileDelete(base_dir+"pcs.go.copy2")
+	fmt.Println(info, err)
+}
+func run_filesearch(){
+	pcs := GetPcs()
+	info,err:=pcs.FileSearch(base_dir,"pcs",false)
 	fmt.Println(info, err)
 }

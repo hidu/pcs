@@ -1,20 +1,10 @@
 package pcs
 import (
   "net/url"
-  "encoding/json"
 )
-type ResponseFileMove struct{
-   From string `json:"from"`
-   To string  `json:"to"`
-}
 
-func (rt *ResponseFileMove) String() string {
-	bf, _ := json.Marshal(rt)
-	return string(bf)
-}
-
-func (pcs *Pcs)FileMove(from string,to string)(*ResponseFileMove,error){
-	var info ResponseFileMove
+func (pcs *Pcs)FileMove(from string,to string)(*ResponseFileCopy,error){
+	var info ResponseFileCopy
 	url_values:=url.Values{}
    url_values.Add("from",from)
    url_values.Add("to",to)

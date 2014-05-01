@@ -4,6 +4,13 @@ import (
   "encoding/json"
 )
 type ResponseFileCopy struct{
+   Extra ResponseFileCopyList `json:"extra"`
+   Request_id uint64 `json:"request_id"`
+}
+type ResponseFileCopyList struct{
+  List []ResponseFileCopyDetail `json:"list"`
+}
+type ResponseFileCopyDetail struct{
    From string `json:"from"`
    To string  `json:"to"`
 }

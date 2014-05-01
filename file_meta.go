@@ -16,7 +16,7 @@ type ResponseFileMeta_SubInfo struct{
 	Path   string `json:"path"`
    Ctime int64 `json:"ctime"`
 	Mtime int64 `json:"mtime"`
-	Block_list    []string `json:"block_list"`  //文件所有分片的md5数组JSON字符串。 
+	Block_list    string `json:"block_list"`  //文件所有分片的md5数组JSON字符串。 
 	Size  uint64 `json:"size"`
 	Isdir  int `json:"isdir"`  //“0”为文件 “1”为目录 
 	Filenum  int `json:"filenum"` 
@@ -40,20 +40,15 @@ func (pcs *Pcs)FileMeta(path string)(*ResponseFileMeta,error){
 
 func (pcs *Pcs)FileMetaBatch(paths []string)(*ResponseFileMeta,error){
   var meta ResponseFileMeta
-  param_map:=make(map[string][]map[string]string)
-  param_map["list"]=[]map[string]string{}
-  for _,path:=range paths{
-     m:=make(map[string]string)
-     m["path"]=path
-    param_map["list"]=append(param_map["list"],m)
+  param_str,err:=paths_param_build(paths)
+  if(err!=nil){
+    return nil,err
   }
   url_values:=url.Values{}
-  param_byte,err:=json.Marshal(param_map)
-  if err!=nil{
-     return nil,err
-  }
-  url_values.Add("param",string(param_byte))
+  url_values.Add("param",param_str)
   _, _, err = pcs.QuickRequest(pcs.BuildRequest(GET, "file?method=meta&"+url_values.Encode(), nil), &meta)
   return &meta,err
 }
 
+func aaa(){
+}

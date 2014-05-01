@@ -38,6 +38,7 @@ func main(){
    funcs["filecopy"]=run_filecopy
    funcs["filemove"]=run_filemv
    funcs["filedelete"]=run_filedelete
+   funcs["filedeletebatch"]=run_filedeletebatch
    funcs["filesearch"]=run_filesearch
    if fun,has:=funcs[func_name];has{
      fun()
@@ -104,6 +105,11 @@ func run_filemv(){
 func run_filedelete(){
 	pcs := GetPcs()
 	info,err:=pcs.FileDelete(base_dir+"pcs.go.copy2")
+	fmt.Println(info, err)
+}
+func run_filedeletebatch(){
+	pcs := GetPcs()
+	info,err:=pcs.FileDeleteBatch([]string{base_dir+"pcs.go.copy2"})
 	fmt.Println(info, err)
 }
 func run_filesearch(){

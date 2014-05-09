@@ -15,15 +15,15 @@ type FileDownloadInfo struct{
     Mtime int64
 }
 //文件下载
-func (pcs *Pcs)FileDownload(path string,writer io.Writer)(*FileDownloadInfo,error){
+func (pcs *Pcs)FileDownload(path string,writer io.Writer)(info *FileDownloadInfo,pcs_err PcsError){
   url_values:=url.Values{}
   url_values.Add("path",path)
   req:=pcs.BuildRequest(GET, "file?method=download&"+url_values.Encode(), nil)
   res,err:=pcs.http_client.Do(req)
   if err!=nil{
-   return nil,err
+   pcs_err.Error_msg=err.Error()
+   return nil,pcs_err
   }
-  info:=new(FileDownloadInfo)
 
   info.ContentLength=res.ContentLength
   info.Content_Type=res.Header.Get("Content-Type")
@@ -34,5 +34,5 @@ func (pcs *Pcs)FileDownload(path string,writer io.Writer)(*FileDownloadInfo,erro
   t,_:=time.Parse(http.TimeFormat,Last_Modified)
   info.Mtime=t.Local().Unix()
 //  fmt.Println(t.Local().Format("2006-01-02 15:04:05"))
-  return info,err
+  return info,pcs_err
 }

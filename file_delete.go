@@ -3,23 +3,22 @@ import (
   "net/url"
 )
 
-func (pcs *Pcs)FileDelete(path string)(*ResponseOk,error){
-	var info ResponseOk
+func (pcs *Pcs)FileDelete(path string)(info *ResponseOk,pcs_err *PcsError){
 	url_values:=url.Values{}
    url_values.Add("path",path)
-	_, _, err := pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=delete&"+url_values.Encode(), nil), &info)
-	return &info,err
+	_, _, pcs_err = pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=delete&"+url_values.Encode(), nil), &info)
+	return info,pcs_err
 }
 //批量删除接口
-func (pcs *Pcs)FileDeleteBatch(paths []string)(*ResponseOk,error){
-	var info ResponseOk
+func (pcs *Pcs)FileDeleteBatch(paths []string)(info *ResponseOk,pcs_err *PcsError){
    param_str,err:=paths_param_build(paths)
    if(err!=nil){
-     return nil,err
+  	  pcs_err.JsonDecodeError(err)
+     return nil,pcs_err
     }
    url_values:=url.Values{}
    url_values.Add("param",param_str)
-	_, _, err = pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=delete&"+url_values.Encode(), nil), &info)
-	return &info,err
+	_, _, pcs_err = pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=delete&"+url_values.Encode(), nil), &info)
+	return info,pcs_err
 }
 

@@ -9,12 +9,12 @@ import (
 *@param query string  关键词
 *@param recursive string 是否递归
 */
-func (pcs *Pcs)FileSearch(path string,query string,recursive bool)(*ResponseFileMeta,error){
-   var info ResponseFileMeta
+func (pcs *Pcs)FileSearch(path string,query string,recursive bool)(info *ResponseFileMeta,pcs_err *PcsError){
 	url_values:=url.Values{}
 	url_values.Add("path",path)
 	if(query==""){
-	  panic("file search with empty query")
+		pcs_err.Error_msg="file search with empty query"
+	   return nil,pcs_err
 	}
 	url_values.Add("wd",query)
 	if(recursive){
@@ -22,6 +22,6 @@ func (pcs *Pcs)FileSearch(path string,query string,recursive bool)(*ResponseFile
 	}else{
 		url_values.Add("re","0")
 	}
-	_, _, err := pcs.QuickRequest(pcs.BuildRequest(GET, "file?method=search&"+url_values.Encode(), nil), &info)
-	return &info,err
+	_, _, pcs_err = pcs.QuickRequest(pcs.BuildRequest(GET, "file?method=search&"+url_values.Encode(), nil), &info)
+	return info,pcs_err
 }

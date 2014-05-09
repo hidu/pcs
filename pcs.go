@@ -38,17 +38,21 @@ func (pcs *Pcs) BuildRequest(method string, params string, body io.Reader) *http
 	}
 	return req
 }
-func (pcs *Pcs) QuickRequest(req *http.Request, v interface{}) (resp *http.Response, resp_body []byte, err error) {
+func (pcs *Pcs) QuickRequest(req *http.Request, v interface{}) (resp *http.Response, resp_body []byte, pcs_err *PcsError) {
+ 	var err error
 	resp, err = pcs.http_client.Do(req)
 	if err != nil {
+		pcs_err.Error_msg=err.Error()
 		return
 	}
 	resp_body, err = ioutil.ReadAll(resp.Body)
+	log.Println("resp_code", resp.StatusCode)
 	log.Println("resp_body", string(resp_body))
 	if err != nil {
 		return
 	}
-	if err != nil {
+	if(resp.StatusCode!=200){
+		err=json.Unmarshal(resp_body, &pcs_err)
 		return
 	}
 	if v != nil {

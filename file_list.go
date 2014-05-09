@@ -41,8 +41,7 @@ const (
 *@param offset int 结果集偏移量 从0开始
 *@param limit int 结果集条数
 */
-func (pcs *Pcs)FileList(path string,orderby string,order string,offset int,limit int)(*ResponseFileList,error){
-	var info ResponseFileList
+func (pcs *Pcs)FileList(path string,orderby string,order string,offset int,limit int)(info *ResponseFileList,pcs_err *PcsError){
 	url_values:=url.Values{}
    url_values.Add("path",path)
    if orderby!=""{
@@ -63,10 +62,10 @@ func (pcs *Pcs)FileList(path string,orderby string,order string,offset int,limit
      url_values.Add("limit",fmt.Sprintf("%d-%d",offset,offset+limit))
    }
    
-	_, _, err := pcs.QuickRequest(pcs.BuildRequest(GET, "file?method=list&"+url_values.Encode(), nil), &info)
-	return &info,err
+	_, _, pcs_err= pcs.QuickRequest(pcs.BuildRequest(GET, "file?method=list&"+url_values.Encode(), nil), &info)
+	return info,pcs_err
 }
 
-func (pcs *Pcs)FileListEasy(path string) (*ResponseFileList,error){
+func (pcs *Pcs)FileListEasy(path string) (*ResponseFileList,*PcsError){
   return pcs.FileList(path,FileList_OrderBy_Name,FileList_Order_Desc,0,0)
 }

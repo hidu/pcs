@@ -20,11 +20,10 @@ func (rt *ResponseFileCopy) String() string {
 	return string(bf)
 }
 
-func (pcs *Pcs)FileCopy(from string,to string)(*ResponseFileCopy,error){
-	var info ResponseFileCopy
+func (pcs *Pcs)FileCopy(from string,to string)(info *ResponseFileCopy,pcs_err *PcsError){
 	url_values:=url.Values{}
    url_values.Add("from",from)
    url_values.Add("to",to)
-	_, _, err := pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=copy&"+url_values.Encode(), nil), &info)
-	return &info,err
+	_, _, pcs_err = pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=copy&"+url_values.Encode(), nil), &info)
+	return info,pcs_err
 }

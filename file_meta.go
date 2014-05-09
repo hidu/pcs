@@ -30,7 +30,7 @@ func (rt *ResponseFileMeta) String() string {
 }
 
 //批量获取文件或目录的元信息
-func (pcs *Pcs)FileMeta(path string)(*ResponseFileMeta,error){
+func (pcs *Pcs)FileMeta(path string)(*ResponseFileMeta,*PcsError){
   var meta ResponseFileMeta
   url_values:=url.Values{}
   url_values.Add("path",path)
@@ -38,16 +38,16 @@ func (pcs *Pcs)FileMeta(path string)(*ResponseFileMeta,error){
   return &meta,err
 }
 
-func (pcs *Pcs)FileMetaBatch(paths []string)(*ResponseFileMeta,error){
-  var meta ResponseFileMeta
+func (pcs *Pcs)FileMetaBatch(paths []string)(meta *ResponseFileMeta,pcs_err *PcsError){
   param_str,err:=paths_param_build(paths)
   if(err!=nil){
-    return nil,err
+  	 pcs_err.Error_msg=err.Error()
+    return nil,pcs_err
   }
   url_values:=url.Values{}
   url_values.Add("param",param_str)
-  _, _, err = pcs.QuickRequest(pcs.BuildRequest(GET, "file?method=meta&"+url_values.Encode(), nil), &meta)
-  return &meta,err
+  _, _, pcs_err = pcs.QuickRequest(pcs.BuildRequest(GET, "file?method=meta&"+url_values.Encode(), nil), &meta)
+  return meta,pcs_err
 }
 
 func aaa(){

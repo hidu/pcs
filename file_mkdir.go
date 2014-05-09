@@ -16,10 +16,9 @@ func (rt *ResponseFileMakeDir) String() string {
 	return string(bf)
 }
 
-func (pcs *Pcs)FileMakeDir(path string)(*ResponseFileMakeDir,error){
-	var info ResponseFileMakeDir
+func (pcs *Pcs)FileMakeDir(path string)(info *ResponseFileMakeDir,pcs_err *PcsError){
 	url_values:=url.Values{}
    url_values.Add("path",path)
-	_, _, err := pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=mkdir&"+url_values.Encode(), nil), &info)
-	return &info,err
+	_, _, pcs_err = pcs.QuickRequest(pcs.BuildRequest(POST, "file?method=mkdir&"+url_values.Encode(), nil), &info)
+	return info,pcs_err
 }

@@ -15,16 +15,17 @@ type FileDownloadInfo struct{
     Mtime int64
 }
 //文件下载
-func (pcs *Pcs)FileDownload(path string,writer io.Writer)(info *FileDownloadInfo,pcs_err PcsError){
+func (pcs *Pcs)FileDownload(path string,writer io.Writer)(info *FileDownloadInfo,pcs_err *PcsError){
+  info=&FileDownloadInfo{}
   url_values:=url.Values{}
   url_values.Add("path",path)
   req:=pcs.BuildRequest(GET, "file?method=download&"+url_values.Encode(), nil)
-  res,err:=pcs.http_client.Do(req)
-  if err!=nil{
-   pcs_err.Error_msg=err.Error()
-   return nil,pcs_err
+  res,err:=pcs.DoRequest(req)
+  if err!=nil || res.StatusCode!=200{
+ 	 _,pcs_err=parseResponse(res,err)
+    return nil,pcs_err
   }
-
+  
   info.ContentLength=res.ContentLength
   info.Content_Type=res.Header.Get("Content-Type")
   info.Content_MD5=res.Header.Get("Content-MD5")

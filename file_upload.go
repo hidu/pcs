@@ -47,7 +47,7 @@ func (pcs *Pcs) FileUploadSingle(data io.Reader, server_path string, ondup_overw
 	bodyWriter := multipart.NewWriter(buf)
 	fileWriter, err := bodyWriter.CreateFormFile("file", "hidu")
 	if(err!=nil){
-		pcs_err=NewPcsError(ERROR_CUSTOM,err.Error())
+		pcs_err=NewPcsError(ERROR_OTHER,err.Error())
 		return
 	}
 	io.Copy(fileWriter,data)
@@ -102,7 +102,7 @@ func (pcs *Pcs)FileUploadSliceMerge(block_list []string,server_path string,ondup
    param_map["param"]=block_list
    param_byte,err:=json.Marshal(param_map)
 	if err!=nil{
-		pcs_err.Error_msg=err.Error()
+		pcs_err=NewPcsError(ERROR_CUSTOM_JSON,err.Error())
 	   return
 	}
    

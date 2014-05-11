@@ -13,7 +13,7 @@ func (pcs *Pcs)FileDelete(path string)(info *ResponseOk,pcs_err *PcsError){
 func (pcs *Pcs)FileDeleteBatch(paths []string)(info *ResponseOk,pcs_err *PcsError){
    param_str,err:=paths_param_build(paths)
    if(err!=nil){
-  	  pcs_err.JsonDecodeError(err)
+  	  pcs_err=NewPcsError(ERROR_OTHER,"FileDeleteBatch params build error:"+err.Error())
      return nil,pcs_err
     }
    url_values:=url.Values{}

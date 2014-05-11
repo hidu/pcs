@@ -19,7 +19,9 @@ func GetPcs() *pcs.Pcs{
       fmt.Println("read ./token.txt failed!",err)
       os.Exit(1)
     }
-	return pcs.NewPcs(strings.TrimSpace(string(data)))
+	_pcs:= pcs.NewPcs(strings.TrimSpace(string(data)))
+	_pcs.Debug=true;
+	return _pcs;
 }
 
 var base_dir string="/apps/pcstest_oauth/"
@@ -84,7 +86,11 @@ func run_download(){
 	pcs := GetPcs()
 	w:=bufio.NewWriter(os.Stdout)
 	obj,err := pcs.FileDownload(base_dir+"pcs.go",w)
-	fmt.Println(obj.ContentLength, err)
+//	w.Flush()
+	fmt.Println(err)
+	if(obj!=nil){
+	fmt.Println(obj.ContentLength, )
+	}
 }
 
 func run_filelist(){

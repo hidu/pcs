@@ -13,7 +13,7 @@ func (pcs *Pcs)FileSearch(path string,query string,recursive bool)(info *Respons
 	url_values:=url.Values{}
 	url_values.Add("path",path)
 	if(query==""){
-		pcs_err.Error_msg="file search with empty query"
+		pcs_err=NewPcsError(ERROR_CUSTOM,"file search with empty query")
 	   return nil,pcs_err
 	}
 	url_values.Add("wd",query)
